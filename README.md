@@ -1,12 +1,19 @@
-# 213-Final-Project
-Final project, Online Booking System
+# 213 Final Project
+Online Booking System
+
+## Architecture 
+
+ - Lorem Ipsum
+
 
 ## Group member responsibilities
 
 - Maddie
   - [x] SQL Database creation and management
   - [ ] PHP logic w/ SQL
-  - [ ] Email work
+  - [ ] Email hosting(Use gmail or custom costed SMTP)
+  - [ ] ER diagram
+  - [ ] 
 - Prabhjot
   - [ ] HTML and Page Structure
   - [ ] CSS
@@ -23,4 +30,9 @@ Final project, Online Booking System
     2. Runs via apache(Bundle with application like container, or configure manually?)
     3. Set admin password via *page*/admin
     4. Add new event
+
+## Challenges
  
+ - Lorem Ipsum
+
+
