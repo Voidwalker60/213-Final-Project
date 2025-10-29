@@ -19,20 +19,19 @@ mysqli_select_db($sqlConnect, "eventDatabase");
 //tableSchemas contains all table definitions for easy iteration
 $tableSchemas = [
     //Event schema
-    "CREATE TABLE IF NOT EXISTS eventTB
-(
+    "CREATE TABLE IF NOT EXISTS eventTB(
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
     type VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
     startTIme TIME NOT NULL,
     endTime TIME NOT NULL,
-    description VARCHAR(255) NOT NULL
+    description VARCHAR(255) NOT NULL,
+    venue VARCHAR(255) NOT NULL
     
 )",
     //User schema
-    "CREATE TABLE IF NOT EXISTS userTB
-(
+    "CREATE TABLE IF NOT EXISTS userTB(
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
@@ -46,8 +45,16 @@ $tableSchemas = [
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     userID INT(6) NOT NULL,
     eventID INT(6) NOT NULL
-)
-"
+)",
+    "CREATE TABLE IF NOT EXISTS organizerTB(
+    id INT(6) PRIMARY KEY AUTO_INCREMENT,
+    userID INT(6) NOT NULL,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL
+
+)"
 
 ];
 
