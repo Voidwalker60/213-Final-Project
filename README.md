@@ -26,10 +26,14 @@ Online Booking System
   - [ ] Documentation Misc.
 
 ## Deployment instructions
-    1. Requires a running MariaDB or SQL database
-    2. Runs via apache(Bundle with application like container, or configure manually?)
-    3. Set admin password via *page*/admin
-    4. Add new event
+1. Requires a running MariaDB or MYSQL server.
+2. Create databases and tables by running:
+```bash
+mysql -u root -p < sql.txt
+ ```
+2. Runs via apache(Bundle with application like container, or configure manually?)
+3. Set admin password via *page*/admin
+4. Add new event
 
 ## Challenges
  
