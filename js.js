@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
-   
+
     const allCards = document.querySelectorAll('.concert-card');
     const noResultsMsg = document.getElementById('noResults');
 
@@ -11,21 +10,20 @@ document.addEventListener('DOMContentLoaded', function() {
             let isMatch = false;
 
             if (filterType === 'text') {
-                
+               
                 if (card.textContent.toLowerCase().includes(filterValue.toLowerCase())) {
                     isMatch = true;
                 }
             } else if (filterType === 'date') {
-               
+                
                 if (card.getAttribute('data-date') === filterValue) {
                     isMatch = true;
                 }
             } else {
-              
+                // Reset: Show all
                 isMatch = true;
             }
 
-            
             card.style.display = isMatch ? "block" : "none";
             if (isMatch) visibleCount++;
         });
@@ -37,11 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-   
+  
     const searchInput = document.getElementById('searchInput');
-    
+
     if (searchInput) {
-        
+        // Runs instantly when you type
         searchInput.addEventListener('input', function () {
             const term = searchInput.value.trim();
             if (term === "") {
@@ -51,9 +49,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-       
+        // Prevent page reload on Enter
         searchInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') e.preventDefault(); 
+            if (e.key === 'Enter') e.preventDefault();
         });
     }
 
@@ -62,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const carousel = document.querySelector('.concert-carousel');
     const leftBtn = document.getElementById('scrollLeftBtn');
     const rightBtn = document.getElementById('scrollRightBtn');
-    
+
     if (carousel && leftBtn && rightBtn) {
         leftBtn.addEventListener('click', () => {
             carousel.scrollBy({ left: -320, behavior: 'smooth' });
@@ -82,18 +80,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const prevBtn = document.getElementById('prevMonthBtn');
         const nextBtn = document.getElementById('nextMonthBtn');
         const clearBtn = document.getElementById('clearDateBtn');
-        
-        let currentMonth = new Date().getMonth(); 
-        let currentYear = 2025; 
+
+        let currentMonth = new Date().getMonth();
+        let currentYear = 2025;
         let selectedDate = null;
 
         function renderCalendar() {
-            calendarGrid.innerHTML = ''; 
-            
+            calendarGrid.innerHTML = '';
+
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             document.getElementById('currentMonthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
 
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay(); 
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
             for (let i = 0; i < firstDay; i++) {
@@ -105,10 +103,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const daySpan = document.createElement('span');
                 daySpan.textContent = day;
                 daySpan.classList.add('calendar-day');
-                
+
                 if (selectedDate && dateObj.getTime() === selectedDate.getTime()) {
                     daySpan.classList.add('selected-start');
-                    daySpan.style.backgroundColor = "#007bff"; 
+                    daySpan.style.backgroundColor = "#007bff";
                     daySpan.style.color = "white";
                 }
 
@@ -134,99 +132,147 @@ document.addEventListener('DOMContentLoaded', function() {
 
         toggleBtn.addEventListener('click', toggleCalendar);
         closeBtn.addEventListener('click', toggleCalendar);
-        
-        prevBtn.addEventListener('click', () => { 
-            currentMonth--; 
-            if (currentMonth < 0) { currentMonth = 11; currentYear--; } 
-            renderCalendar(); 
+
+        prevBtn.addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
         });
-        
-        nextBtn.addEventListener('click', () => { 
-            currentMonth++; 
-            if (currentMonth > 11) { currentMonth = 0; currentYear++; } 
-            renderCalendar(); 
+
+        nextBtn.addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendar();
         });
 
         clearBtn.addEventListener('click', () => {
             selectedDate = null;
-            filterConcerts('reset', null); 
+            filterConcerts('reset', null);
             renderCalendar();
         });
     }
 
 
-   
+ 
     const bookingForm = document.getElementById('bookingForm');
-    
+
     if (bookingForm) {
-      
+        // 1. Get Elements
         const params = new URLSearchParams(window.location.search);
         const concertName = params.get('concert');
         if (concertName) document.getElementById('selectedConcert').value = concertName;
 
         const ticketsInput = document.getElementById('tickets');
         const ticketTypeInput = document.getElementById('ticketType');
-        
-       
+
+        // These are now <input> elements, so we use .value to change them
         const singlePriceInput = document.getElementById('singlePriceDisplay');
         const totalInput = document.getElementById('totalPrice');
+        const messageDisplay = document.getElementById('message'); // Get message p tag
 
-        
-        const basePrice = Math.floor(Math.random() * 101) + 50; 
+        // 2. Generate Base Random Price (for a Normal ticket) $50 - $150
+        const basePrice = Math.floor(Math.random() * 101) + 50;
 
-        
+        // Function to Calculate and Update Prices
         function updatePrice() {
             const qty = parseInt(ticketsInput.value) || 1;
             const multiplier = parseFloat(ticketTypeInput.value); // 1, 1.5, or 2.5
-            
-           
+
+            // Calculate cost for ONE ticket
             const currentTicketPrice = Math.floor(basePrice * multiplier);
-            
-           
+
+            // Calculate Total
             const total = currentTicketPrice * qty;
 
-           
+            // UPDATE: Set the value inside the input boxes
             singlePriceInput.value = "$" + currentTicketPrice;
             totalInput.value = "$" + total;
         }
 
-       
-        updatePrice(); 
+        // 3. Initialize Display
+        updatePrice();
 
-        
+        // 4. Listen for changes
         if(ticketsInput) ticketsInput.addEventListener('input', updatePrice);
         if(ticketTypeInput) ticketTypeInput.addEventListener('change', updatePrice);
 
-      
-        bookingForm.addEventListener('submit', function(e) {
+        // 5. Handle Form Submit - NOW ASYNCHRONOUS FOR VALIDATION
+        bookingForm.addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Clear previous message
+            messageDisplay.innerHTML = '';
+            
             const name = document.getElementById('name').value;
-            const total = totalInput.value; 
+            const email = document.getElementById('email').value;
+            const concert = document.getElementById('selectedConcert').value;
+            const total = totalInput.value;
             const typeText = ticketTypeInput.options[ticketTypeInput.selectedIndex].text;
-            
-            document.getElementById('message').innerHTML = `
-                <span style="color:#00eaff; font-size:1.2rem;">
-                    🎉 Booking Confirmed for ${name}!<br>
-                    Type: ${typeText}<br>
-                    Total Paid: ${total}
-                </span>`;
-            
-            bookingForm.reset();
-            setTimeout(updatePrice, 100); 
+
+            // 5a. Data to send to PHP for conflict check
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('concert', concert); 
+
+            try {
+                // 5b. Send request to PHP script (check_booking.php)
+                const response = await fetch('check_booking.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+
+                if (result.error && result.conflict) {
+                    // CONFLICT ERROR: User has a booking on the same day
+                    messageDisplay.innerHTML = `
+                        <span style="color:#ff4d4d; font-size:1.1rem; font-weight: bold;">
+                            🛑 ${result.message}
+                        </span>`;
+                    return; // Stop the booking process
+                } 
+                
+                if (result.error) {
+                    // General server error
+                     messageDisplay.innerHTML = `
+                        <span style="color:#ff4d4d; font-size:1.1rem;">
+                            Error processing request. ${result.message}
+                        </span>`;
+                    return;
+                }
+
+                // 5c. If NO CONFLICT, proceed with simulated booking confirmation
+                messageDisplay.innerHTML = `
+                    <span style="color:#00eaff; font-size:1.2rem;">
+                        🎉 Booking Confirmed for ${name}!<br>
+                        Type: ${typeText}<br>
+                        Total Paid: ${total}
+                    </span>`;
+
+                bookingForm.reset();
+                setTimeout(updatePrice, 100);
+
+            } catch (error) {
+                messageDisplay.innerHTML = `
+                    <span style="color:#ff4d4d; font-size:1.1rem;">
+                        A network error occurred. Please ensure the PHP server is running.
+                    </span>`;
+                console.error('Fetch Error:', error);
+            }
         });
     }
 
-   
+  
     const filterLinks = document.querySelectorAll('.filter-link');
     filterLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const value = this.getAttribute('data-filter');
-            
+
             if(searchInput) {
-                
+                // 1. Put the text in the search bar
                 searchInput.value = value;
-                
+                // 2. Trigger the search logic
                 searchInput.dispatchEvent(new Event('input'));
             }
         });
