@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS userTB (
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
-    password VARCHAR(255) NOT NULL, -- Increased length for hashing
+    password VARCHAR(255) NOT NULL,-- Increased length for hashing
     isAdmin TINYINT(1) NOT NULL DEFAULT 0,
     email VARCHAR(50) NOT NULL UNIQUE
 );
@@ -29,6 +29,9 @@ CREATE TABLE IF NOT EXISTS bookingTB (
     userID INT(6) NOT NULL,
     eventID INT(6) NOT NULL,
     bookingDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    totalPrice INT(6) NOT NULL DEFAULT 0,
+    quantity INT(6) NOT NULL DEFAULT 1,
+    ticketType VARCHAR(50) NOT NULL DEFAULT 'Regular',
     FOREIGN KEY (userID) REFERENCES userTB(id) ON DELETE CASCADE,
     FOREIGN KEY (eventID) REFERENCES eventTB(id) ON DELETE CASCADE
 );
