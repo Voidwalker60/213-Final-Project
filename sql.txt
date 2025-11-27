@@ -1,36 +1,68 @@
-CREATE DATABASE IF NOT EXISTS eventDatabase;
+DROP DATABASE IF EXISTS eventDatabase;
+
+CREATE DATABASE eventDatabase;
 USE eventDatabase;
 
-CREATE TABLE IF NOT EXISTS eventTB(
+
+CREATE TABLE userTB (
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(50) NOT NULL,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL, -- Increased length for hashing
+    isAdmin TINYINT(1) NOT NULL DEFAULT 0,
+    email VARCHAR(50) NOT NULL UNIQUE
+);
+
+CREATE TABLE eventTB (
+    id INT(6) PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
     type VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
-    startTIme TIME NOT NULL,
+    startTime TIME NOT NULL,
     endTime TIME NOT NULL,
     description VARCHAR(255) NOT NULL,
     venue VARCHAR(255) NOT NULL
 );
-CREATE TABLE IF NOT EXISTS userTB(
-    id INT(6) PRIMARY KEY AUTO_INCREMENT,
-    firstName VARCHAR(50) NOT NULL,
-    lastName VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    isAdmin TINYINT(1) NOT NULL,
-    email VARCHAR(50) NOT NULL
-);
-CREATE TABLE IF NOT EXISTS bookingTB(
 
+CREATE TABLE bookingTB (
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     userID INT(6) NOT NULL,
-    eventID INT(6) NOT NULL
+    eventID INT(6) NOT NULL,
+    bookingDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userID) REFERENCES userTB(id) ON DELETE CASCADE,
+    FOREIGN KEY (eventID) REFERENCES eventTB(id) ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS organizerTB(
+
+CREATE TABLE organizerTB (
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     userID INT(6) NOT NULL,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL,
-    email VARCHAR(50) NOT NULL
-
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE,
+    FOREIGN KEY (userID) REFERENCES userTB(id) ON DELETE CASCADE
 );
+
+
+INSERT INTO userTB (firstName, lastName, password, isAdmin, email) VALUES
+('John', 'Doe', 'password123', 1, 'admin@stubhub.com'),
+('Jane', 'Smith', 'userpass456', 0, 'jane.smith@gmail.com');
+
+
+INSERT INTO eventTB (name, type, date, startTime, endTime, description, venue) VALUES
+('Imagine Dragons Live', 'Pop Rock', '2025-12-05', '19:00:00', '22:00:00', 'An electrifying night with Imagine Dragons featuring their greatest hits.', 'Kelowna Stadium'),
+
+('The Tea Party and Headstones', 'Rock', '2025-12-12', '20:00:00', '23:30:00', 'A legendary rock double-header event you cannot miss.', 'Surrey Arena'),
+
+('Coldplay – Music of the Spheres', 'Pop', '2025-12-20', '18:30:00', '21:30:00', 'Experience the magic of the spheres with spectacular visuals and sound.', 'Kamloops Dome'),
+
+('Noir Memoirs Hiphop night', 'Hip-Hop', '2025-12-24', '21:00:00', '01:00:00', 'Christmas Eve special hip-hop night featuring local and international talent.', 'Vernon Center'),
+
+('The Weeknd – After Hours Tour', 'Pop R&B', '2025-12-30', '20:00:00', '23:00:00', 'The Weeknd brings his After Hours tour to the arena for a night of R&B.', 'Peachland Arena'),
+
+('SoulSync: Solstice Renewal', 'Soul', '2025-12-30', '16:00:00', '19:00:00', 'A spiritual renewal event to close out the year with peace and harmony.', 'Merritt Stadium');
+
+
+INSERT INTO bookingTB (userID, eventID) VALUES
+(2, 1), -- Jane Smith booked Imagine Dragons
+(2, 5); -- Jane Smith booked The Weeknd
