@@ -1,10 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Concert Booking</title>
+    
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
 
+    <div class="background-overlay"></div>
+
+    <header class="navbar primary-header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="stubhub-logo-text">StubHub</span>
+            </div>
+            <div class="search-bar">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search events (Press Enter)...">
+            </div>
+        </div>
+
+        <nav class="nav-links-right">
+            <a href="#my-tickets" class="nav-item">My Tickets</a>
+            <button class="sign-in-btn">Sign In <i class="fas fa-user-circle user-icon"></i></button>
+            <button class="useful-btn">Help</button>
+        </nav>
+    </header>
+
+    <div class="secondary-navbar">
+        <nav class="nav-dropdowns">
+            <div class="dropdown">
+                <button class="dropbtn">Concerts <i class="fas fa-chevron-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="#" class="filter-link" data-filter="Pop">Pop Tours</a>
+                    <a href="#" class="filter-link" data-filter="Rock">Rock Shows</a>
+                    <a href="#" class="filter-link" data-filter="Hip-Hop">Hip-Hop Events</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropbtn">Cities <i class="fas fa-chevron-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="#" class="filter-link" data-filter="Kelowna">Kelowna</a>
+                    <a href="#" class="filter-link" data-filter="Surrey">Surrey</a>
+                    <a href="#" class="filter-link" data-filter="Kamloops">Kamloops</a>
+                    <a href="#" class="filter-link" data-filter="Vernon">Vernon</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropbtn">Venues <i class="fas fa-chevron-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="#" class="filter-link" data-filter="Stadium">Stadiums</a>
+                    <a href="#" class="filter-link" data-filter="Arena">Arenas</a>
+                    <a href="#" class="filter-link" data-filter="Center">Centers</a>
+                </div>
+            </div>
+        </nav>
+        
+        <div class="calendar-dropdown-container">
+            <button class="all-dates-btn" id="toggleCalendarBtn">
+                <i class="fas fa-calendar-alt"></i> All dates <i class="fas fa-chevron-down"></i>
+            </button>
+            
+            <div class="calendar-popup" id="calendarPopup">
+                <div class="calendar-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <span class="popup-title" style="font-weight: bold;">Select Date</span>
+                    <button class="close-calendar" id="closeCalendarBtn" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="calendar-nav">
+                    <button id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+                    <span id="currentMonthYear">December 2025</span>
+                    <button id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-grid-header">
+                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                </div>
+                <div class="calendar-grid" id="calendarGrid"></div>
+                <button class="clear-selection-btn" id="clearDateBtn" style="width: 100%; margin-top: 10px;">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <p id="noResults" style="display:none; text-align:center; color:#ff4d4d; font-size:18px; margin-top:20px;">
+        No concerts found. Try a different search or date.
+    </p>
+
+    <section class="promotions-section">
+        <h2>🔥 Promotions & Special Offers</h2>
+        <div class="promotions-cards">
+            <div class="promo-card">
+                <h4>🎉 20% Off Early Bird Tickets!</h4>
+                <p>Get exclusive discounts when you book 2 weeks before the event.</p>
+                <button class="neon-btn">Learn More</button>
+            </div>
+            <div class="promo-card">
+                <h4>✨ VIP Access Upgrade</h4>
+                <p>Free upgrade to VIP for selected concerts this month.</p>
+                <button class="neon-btn">Check Concerts</button>
+            </div>
+            <div class="promo-card">
+                <h4>🎟️ Buy 1 Get 1 Free</h4>
+                <p>Limited seats available for selected artists. Hurry up!</p>
+                <button class="neon-btn">Claim Offer</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="concerts" class="concert-section">
+        <h2 class="concert-section-title">Available Concerts</h2> 
+        <div class="concert-carousel-wrapper">
+            <button class="scroll-btn left" id="scrollLeftBtn"><i class="fas fa-chevron-left"></i></button>
+            
+            <div class="concert-carousel">
+                
+                <div class="concert-card" data-date="2025-12-05">
+                    <img src="images/01.png" alt="Imagine Dragons">
+                    <div class="card-info">
+                        <h3>Imagine Dragons Live</h3>
+                        <p class="date">December 05, 2025 • Kelowna Stadium</p>
+                        <span style="display:none;">Pop Rock Stadium</span>
+                        <a href="booking.html?concert=Imagine Dragons Live" class="neon-btn-link neon-btn" style="text-decoration:none; display:inline-block; text-align:center;">Book Now</a>
+                    </div>
+                </div>
+
+                <div class="concert-card" data-date="2025-12-12">
+                    <img src="./images/02.avif" alt="The Tea Party and Headstones">
+                    <div class="card-info">
+                        <h3>The Tea Party and Headstones</h3>
+                        <p class="date">December 12, 2025 • Surrey Arena</p>
+                        <span style="display:none;">Rock Arena</span>
+                        <a href="booking.html?concert=The Tea Party and Headstones" class="neon-btn-link neon-btn" style="text-decoration:none; display:inline-block; text-align:center;">Book Now</a>
+                    </div>
+                </div>
+
+                <div class="concert-card" data-date="2025-12-20">
+                    <img src="images/03.png" alt="Coldplay">
+                    <div class="card-info">
+                        <h3>Coldplay – Music of the Spheres</h3>
+                        <p class="date">December 20, 2025 • Kamloops Dome</p>
+                        <span style="display:none;">Pop Dome</span>
+                         <a href="booking.html?concert=Coldplay – Music of the Spheres" class="neon-btn-link neon-btn" style="text-decoration:none; display:inline-block; text-align:center;">Book Now</a>
+                    </div>
+                </div>
+
+                <div class="concert-card" data-date="2025-12-24">
+                    <img src="./images/04.webp" alt="Noir Memoirs Hiphop night">
+                    <div class="card-info">
+                        <h3>Noir Memoirs Hiphop night</h3>
+                        <p class="date">December 24, 2025 • Vernon Center</p>
+                        <span style="display:none;">Hip-Hop Center</span>
+                         <a href="booking.html?concert=Noir Memoirs Hiphop night" class="neon-btn-link neon-btn" style="text-decoration:none; display:inline-block; text-align:center;">Book Now</a>
+                    </div>
+                </div>
+
+                <div class="concert-card" data-date="2025-12-30">
+                    <img src="images/05.png" alt="The Weeknd">
+                    <div class="card-info">
+                        <h3>The Weeknd – After Hours Tour</h3>
+                        <p class="date">December 30, 2025 • Peachland Arena</p>
+                        <span style="display:none;">Pop R&B Arena</span>
+                        <a href="booking.html?concert=The Weeknd – After Hours Tour" class="neon-btn-link neon-btn" style="text-decoration:none; display:inline-block; text-align:center;">Book Now</a>
+                    </div>
+                </div>
+
+                <div class="concert-card" data-date="2025-12-15">
+                    <img src="./images/06.webp" alt="SoulSync: Solstice Renewal">
+                    <div class="card-info">
+                        <h3>SoulSync: Solstice Renewal</h3>
+                        <p class="date">December 15, 2025 • Merritt Stadium</p>
+                        <span style="display:none;">Soul Stadium</span>
+                         <a href="booking.html?concert=SoulSync: Solstice Renewal" class="neon-btn-link neon-btn" style="text-decoration:none; display:inline-block; text-align:center;">Book Now</a>
+                    </div>
+                </div>
+            </div>
+            <button class="scroll-btn right" id="scrollRightBtn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js.js" defer></script> 
 </body>
 </html>
