@@ -518,7 +518,18 @@ body {
 .concert-card .date {
   font-size: 0.9em;
   color: #ccc;
+  margin-bottom: 5px; /* Reduced space between date and time */
+}
+
+/* Styles for the time slot */
+.concert-card .time {
+  font-size: 0.85em;
+  color: #bbb;
+  margin-top: 0;
   margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .neon-btn {
