@@ -31,6 +31,12 @@ Online Booking System
 ```bash
 mysql -u root -p < sql.txt
  ```
+3. PHP must be installed on the server.
+   1. The following php modules must be enabled in php.ini:
+       - mysqli
+       - calendar
+       - json
+   2. The mail function should be configured with your SMTP server of choice in php.ini.
 2. Runs via apache(Bundle with application like container, or configure manually?)
 3. Set admin password via *page*/admin
 4. Add new event

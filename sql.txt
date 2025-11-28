@@ -4,16 +4,16 @@ CREATE DATABASE eventDatabase;
 USE eventDatabase;
 
 
-CREATE TABLE userTB (
+CREATE TABLE IF NOT EXISTS userTB (
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
-    password VARCHAR(255) NOT NULL, -- Increased length for hashing
+    password VARCHAR(255) NOT NULL,-- Increased length for hashing
     isAdmin TINYINT(1) NOT NULL DEFAULT 0,
     email VARCHAR(50) NOT NULL UNIQUE
 );
 
-CREATE TABLE eventTB (
+CREATE TABLE IF NOT EXISTS eventTB (
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     type VARCHAR(50) NOT NULL,
@@ -24,16 +24,19 @@ CREATE TABLE eventTB (
     venue VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE bookingTB (
+CREATE TABLE IF NOT EXISTS bookingTB (
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     userID INT(6) NOT NULL,
     eventID INT(6) NOT NULL,
     bookingDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    totalPrice INT(6) NOT NULL DEFAULT 0,
+    quantity INT(6) NOT NULL DEFAULT 1,
+    ticketType VARCHAR(50) NOT NULL DEFAULT 'Regular',
     FOREIGN KEY (userID) REFERENCES userTB(id) ON DELETE CASCADE,
     FOREIGN KEY (eventID) REFERENCES eventTB(id) ON DELETE CASCADE
 );
 
-CREATE TABLE organizerTB (
+CREATE TABLE IF NOT EXISTS organizerTB (
     id INT(6) PRIMARY KEY AUTO_INCREMENT,
     userID INT(6) NOT NULL,
     firstName VARCHAR(50) NOT NULL,
@@ -44,12 +47,12 @@ CREATE TABLE organizerTB (
 );
 
 
-INSERT INTO userTB (firstName, lastName, password, isAdmin, email) VALUES
+INSERT IGNORE INTO userTB (firstName, lastName, password, isAdmin, email) VALUES
 ('John', 'Doe', 'password123', 1, 'admin@stubhub.com'),
 ('Jane', 'Smith', 'userpass456', 0, 'jane.smith@gmail.com');
 
 
-INSERT INTO eventTB (name, type, date, startTime, endTime, description, venue) VALUES
+INSERT IGNORE INTO eventTB (name, type, date, startTime, endTime, description, venue) VALUES
 ('Imagine Dragons Live', 'Pop Rock', '2025-12-05', '19:00:00', '22:00:00', 'An electrifying night with Imagine Dragons featuring their greatest hits.', 'Kelowna Stadium'),
 
 ('The Tea Party and Headstones', 'Rock', '2025-12-12', '20:00:00', '23:30:00', 'A legendary rock double-header event you cannot miss.', 'Surrey Arena'),
@@ -63,6 +66,6 @@ INSERT INTO eventTB (name, type, date, startTime, endTime, description, venue) V
 ('SoulSync: Solstice Renewal', 'Soul', '2025-12-30', '16:00:00', '19:00:00', 'A spiritual renewal event to close out the year with peace and harmony.', 'Merritt Stadium');
 
 
-INSERT INTO bookingTB (userID, eventID) VALUES
+INSERT IGNORE INTO bookingTB (userID, eventID) VALUES
 (2, 1), -- Jane Smith booked Imagine Dragons
 (2, 5); -- Jane Smith booked The Weeknd
