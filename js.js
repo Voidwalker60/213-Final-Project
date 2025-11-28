@@ -216,12 +216,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             try {
                 // 5b. Send request to PHP script (check_booking.php)
-                const response = await fetch('check_booking.php', {
+                const checkResponse = await fetch('check_booking.php', {
                     method: 'POST',
                     body: formData
                 });
                 
-                const result = await response.json();
+                const result = await checkResponse.json();
 
                 if (result.error && result.conflict) {
                     // CONFLICT ERROR: User has a booking on the same day
@@ -248,6 +248,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         Type: ${typeText}<br>
                         Total Paid: ${total}
                     </span>`;
+
+                // 5c. send confirmation email
+                const sendMail = await fetch('sendMail.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ name: name, email: email, concert: concert})
+                });
 
                 bookingForm.reset();
                 setTimeout(updatePrice, 100);
