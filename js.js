@@ -1,10 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-  
     const allCards = document.querySelectorAll('.concert-card');
     const noResultsMsg = document.getElementById('noResults');
     const searchInput = document.getElementById('searchInput');
 
+    // ======================================================
+    // 1. FILTER & SEARCH LOGIC
+    // ======================================================
     function filterConcerts(filterType, filterValue) {
         let visibleCount = 0;
 
@@ -59,7 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-   
+    // ======================================================
+    // 2. CAROUSEL LOGIC
+    // ======================================================
     const carousel = document.querySelector('.concert-carousel');
     const leftBtn = document.getElementById('scrollLeftBtn');
     const rightBtn = document.getElementById('scrollRightBtn');
@@ -73,6 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ======================================================
+    // 3. CALENDAR WIDGET LOGIC
+    // ======================================================
     const calendarGrid = document.getElementById('calendarGrid');
     if (calendarGrid) {
         const toggleBtn = document.getElementById('toggleCalendarBtn');
@@ -152,6 +159,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ======================================================
+    // 4. AUTHENTICATION MODAL LOGIC
+    // ======================================================
     const authModal = document.getElementById('authModal');
     const signInBtns = document.querySelectorAll('.sign-in-btn'); 
     const closeAuthBtn = document.querySelector('.close-modal-btn');
@@ -165,6 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     signInBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
+            // Don't open if already logged in (Welcome button)
             if (btn.innerText.includes("Welcome")) return;
             if (authModal) authModal.style.display = 'flex';
         });
@@ -216,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     method: 'POST',
                     body: formData
                 });
-                const text = await response.text();
+                const text = await response.text(); 
                 
                 try {
                     const result = JSON.parse(text);
@@ -242,6 +253,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ======================================================
+    // 5. BOOKING FORM LOGIC
+    // ======================================================
     const bookingForm = document.getElementById('bookingForm');
 
     if (bookingForm) {
@@ -330,6 +344,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ======================================================
+    // 6. DASHBOARD & CANCELLATION LOGIC
+    // ======================================================
     const bookedListContainer = document.getElementById('bookedListContainer');
     const dashboardUserName = document.getElementById('dashboardUserName');
 
@@ -357,11 +374,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     bookedListContainer.innerHTML = ''; 
                     
+                    // 🛑 IMAGE MAPPING: Manually matching database names to files
+                    const eventImages = {
+                        "Imagine Dragons Live": "images/01.png",
+                        "The Tea Party and Headstones": "images/02.avif",
+                        "Coldplay – Music of the Spheres": "images/03.png",
+                        "Noir Memoirs Hiphop night": "images/04.webp",
+                        "The Weeknd – After Hours Tour": "images/05.png",
+                        "SoulSync: Solstice Renewal": "images/06.webp"
+                    };
+
                     data.bookings.forEach(booking => {
-                        // 🛑 ADDED CANCEL BUTTON HERE
+                        
+                        // Pick correct image or use default if name doesn't match
+                        const imageSrc = eventImages[booking.name] || 'images/default.jpg';
+
                         const cardHTML = `
                             <div class="concert-card booked-card" id="booking-${booking.booking_id}" style="width: 280px;">
-                                <img src="${booking.image_path || 'images/default.jpg'}" alt="${booking.name}">
+                                <img src="${imageSrc}" alt="${booking.name}">
                                 <div class="card-info">
                                     <h3>${booking.name}</h3>
                                     <p class="date">${booking.date} • ${booking.venue || 'Venue TBD'}</p>
@@ -381,7 +411,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         bookedListContainer.insertAdjacentHTML('beforeend', cardHTML);
                     });
 
-                    // 🛑 ATTACH CLICK LISTENERS FOR CANCEL
                     attachCancelListeners();
                 }
             } catch (e) {
@@ -401,12 +430,10 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', async function() {
                 const bookingId = this.getAttribute('data-id');
                 
-                // 1. Confirm Dialog
                 const confirmCancel = confirm("Are you sure you want to cancel this event?");
                 
                 if (confirmCancel) {
                     try {
-                        // 2. Send Request to PHP
                         const response = await fetch('cancel_booking.php', {
                             method: 'POST',
                             headers: {'Content-Type': 'application/json'},
@@ -415,20 +442,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         const result = await response.json();
 
                         if (result.success) {
-                            // 3. Success Alert & Remove Card
                             alert("Your booking is cancelled. You will get your refund.");
                             
-                            // Remove element from screen
                             const cardToRemove = document.getElementById(`booking-${bookingId}`);
                             if (cardToRemove) cardToRemove.remove();
                             
-                            // If no cards left, show message
                             if (document.querySelectorAll('.booked-card').length === 0) {
                                 bookedListContainer.innerHTML = '<p style="color:#00ff88; font-weight: bold; font-size: 1.1rem;">🎉 No bookings yet! Check out the available concerts below.</p>';
                             }
 
                         } else {
-                            alert("Error: " + result.message);
+                            // Shows message from PHP (e.g., "Too late!...")
+                            alert(result.message); 
                         }
                     } catch (err) {
                         alert("Network error occurred.");
@@ -436,6 +461,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
-    }
+    } 
 
 });
