@@ -1,7 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+  
     const allCards = document.querySelectorAll('.concert-card');
     const noResultsMsg = document.getElementById('noResults');
+    const searchInput = document.getElementById('searchInput');
 
     function filterConcerts(filterType, filterValue) {
         let visibleCount = 0;
@@ -10,17 +12,14 @@ document.addEventListener('DOMContentLoaded', function() {
             let isMatch = false;
 
             if (filterType === 'text') {
-               
                 if (card.textContent.toLowerCase().includes(filterValue.toLowerCase())) {
                     isMatch = true;
                 }
             } else if (filterType === 'date') {
-                
                 if (card.getAttribute('data-date') === filterValue) {
                     isMatch = true;
                 }
             } else {
-                // Reset: Show all
                 isMatch = true;
             }
 
@@ -28,18 +27,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isMatch) visibleCount++;
         });
 
-       
         if (noResultsMsg) {
             noResultsMsg.style.display = (visibleCount === 0) ? 'block' : 'none';
         }
     }
 
-
-  
-    const searchInput = document.getElementById('searchInput');
-
     if (searchInput) {
-        // Runs instantly when you type
         searchInput.addEventListener('input', function () {
             const term = searchInput.value.trim();
             if (term === "") {
@@ -49,12 +42,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Prevent page reload on Enter
         searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') e.preventDefault();
         });
     }
 
+    const filterLinks = document.querySelectorAll('.filter-link');
+    filterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const value = this.getAttribute('data-filter');
+            if(searchInput) {
+                searchInput.value = value;
+                searchInput.dispatchEvent(new Event('input'));
+            }
+        });
+    });
 
    
     const carousel = document.querySelector('.concert-carousel');
@@ -70,8 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-
-   
     const calendarGrid = document.getElementById('calendarGrid');
     if (calendarGrid) {
         const toggleBtn = document.getElementById('toggleCalendarBtn');
@@ -87,7 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         function renderCalendar() {
             calendarGrid.innerHTML = '';
-
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             document.getElementById('currentMonthYear').textContent = `${monthNames[currentMonth]} ${currentYear}`;
 
@@ -152,136 +152,290 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    const authModal = document.getElementById('authModal');
+    const signInBtns = document.querySelectorAll('.sign-in-btn'); 
+    const closeAuthBtn = document.querySelector('.close-modal-btn');
+    const tabSignIn = document.getElementById('tabSignIn');
+    const tabSignUp = document.getElementById('tabSignUp');
+    const modalTitle = document.getElementById('modalTitle');
+    const authForm = document.getElementById('authForm');
+    const authMessage = document.getElementById('authMessage');
+    
+    let currentAuthAction = 'signin'; 
 
- 
+    signInBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (btn.innerText.includes("Welcome")) return;
+            if (authModal) authModal.style.display = 'flex';
+        });
+    });
+
+    if(closeAuthBtn) {
+        closeAuthBtn.addEventListener('click', () => {
+            authModal.style.display = 'none';
+        });
+    }
+
+    if(tabSignIn && tabSignUp) {
+        tabSignIn.addEventListener('click', () => {
+            currentAuthAction = 'signin';
+            modalTitle.textContent = 'Welcome Back';
+            tabSignIn.classList.add('active-tab');
+            tabSignUp.classList.remove('active-tab');
+            authMessage.textContent = '';
+        });
+
+        tabSignUp.addEventListener('click', () => {
+            currentAuthAction = 'signup';
+            modalTitle.textContent = 'Create Account';
+            tabSignUp.classList.add('active-tab');
+            tabSignIn.classList.remove('active-tab');
+            authMessage.textContent = '';
+        });
+    }
+
+    if (authForm) {
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const originalText = submitBtn.innerText;
+            submitBtn.innerText = "Checking...";
+            authMessage.textContent = "";
+
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+
+            const formData = new FormData();
+            formData.append('action', currentAuthAction);
+            formData.append('email', email);
+            formData.append('password', password);
+
+            try {
+                const response = await fetch('auth.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const text = await response.text();
+                
+                try {
+                    const result = JSON.parse(text);
+
+                    if (result.success) {
+                        window.location.href = result.redirect || 'dashboard.html';
+                    } else {
+                        authMessage.textContent = result.message;
+                        submitBtn.innerText = originalText;
+                    }
+                } catch (jsonError) {
+                    console.error("JSON Parse Error:", jsonError);
+                    alert("SERVER ERROR! \n\n" + text.substring(0, 400));
+                    authMessage.textContent = "Server error.";
+                    submitBtn.innerText = originalText;
+                }
+
+            } catch (networkError) {
+                console.error(networkError);
+                authMessage.textContent = "Network failed.";
+                submitBtn.innerText = originalText;
+            }
+        });
+    }
+
     const bookingForm = document.getElementById('bookingForm');
 
     if (bookingForm) {
-        // 1. Get Elements
         const params = new URLSearchParams(window.location.search);
         const concertName = params.get('concert');
         if (concertName) document.getElementById('selectedConcert').value = concertName;
 
         const ticketsInput = document.getElementById('tickets');
         const ticketTypeInput = document.getElementById('ticketType');
-
-        // These are now <input> elements, so we use .value to change them
         const singlePriceInput = document.getElementById('singlePriceDisplay');
         const totalInput = document.getElementById('totalPrice');
-        const messageDisplay = document.getElementById('message'); // Get message p tag
+        const messageDisplay = document.getElementById('message');
 
-        // 2. Generate Base Random Price (for a Normal ticket) $50 - $150
-        const basePrice = Math.floor(Math.random() * 101) + 50;
+        const basePrice = Math.floor(Math.random() * 101) + 50; 
 
-        // Function to Calculate and Update Prices
         function updatePrice() {
             const qty = parseInt(ticketsInput.value) || 1;
-            const multiplier = parseFloat(ticketTypeInput.value); // 1, 1.5, or 2.5
-
-            // Calculate cost for ONE ticket
+            const multiplier = parseFloat(ticketTypeInput.value); 
             const currentTicketPrice = Math.floor(basePrice * multiplier);
-
-            // Calculate Total
             const total = currentTicketPrice * qty;
 
-            // UPDATE: Set the value inside the input boxes
             singlePriceInput.value = "$" + currentTicketPrice;
             totalInput.value = "$" + total;
         }
 
-        // 3. Initialize Display
         updatePrice();
-
-        // 4. Listen for changes
         if(ticketsInput) ticketsInput.addEventListener('input', updatePrice);
         if(ticketTypeInput) ticketTypeInput.addEventListener('change', updatePrice);
 
-        // 5. Handle Form Submit - NOW ASYNCHRONOUS FOR VALIDATION
         bookingForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            // Clear previous message
-            messageDisplay.innerHTML = '';
+            messageDisplay.innerHTML = '<span style="color:#aaa;">Processing...</span>';
             
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const concert = document.getElementById('selectedConcert').value;
-            const total = totalInput.value;
+            
+            const qty = parseInt(ticketsInput.value);
+            const rawTotal = totalInput.value.replace('$', ''); 
             const typeText = ticketTypeInput.options[ticketTypeInput.selectedIndex].text;
 
-            // 5a. Data to send to PHP for conflict check
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('concert', concert); 
+            const checkData = new FormData();
+            checkData.append('email', email);
+            checkData.append('concert', concert); 
 
             try {
-                // 5b. Send request to PHP script (check_booking.php)
-                const checkResponse = await fetch('check_booking.php', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const result = await checkResponse.json();
+                // A. Check Conflict
+                const checkResponse = await fetch('check_booking.php', { method: 'POST', body: checkData });
+                const checkResult = await checkResponse.json();
 
-                if (result.error && result.conflict) {
-                    // CONFLICT ERROR: User has a booking on the same day
-                    messageDisplay.innerHTML = `
-                        <span style="color:#ff4d4d; font-size:1.1rem; font-weight: bold;">
-                            🛑 ${result.message}
-                        </span>`;
-                    return; // Stop the booking process
+                if (checkResult.error) {
+                    messageDisplay.innerHTML = `<span style="color:#ff4d4d; font-weight: bold; font-size: 1.1rem;">🛑 ${checkResult.message}</span>`;
+                    return; 
                 } 
-                
-                if (result.error) {
-                    // General server error
-                     messageDisplay.innerHTML = `
-                        <span style="color:#ff4d4d; font-size:1.1rem;">
-                            Error processing request. ${result.message}
-                        </span>`;
+
+                // B. Insert
+                const insertData = { email: email, concert: concert, qty: qty, type: typeText, total: rawTotal };
+                const insertResponse = await fetch('insert_booking.php', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(insertData)
+                });
+                const insertResult = await insertResponse.json();
+
+                if (!insertResult.success) {
+                    messageDisplay.innerHTML = `<span style="color:#ff4d4d;">⚠️ Save Failed: ${insertResult.message}</span>`;
                     return;
                 }
 
-                // 5c. If NO CONFLICT, proceed with simulated booking confirmation
-                messageDisplay.innerHTML = `
-                    <span style="color:#00eaff; font-size:1.2rem;">
-                        🎉 Booking Confirmed for ${name}!<br>
-                        Type: ${typeText}<br>
-                        Total Paid: ${total}
-                    </span>`;
-
-                // 5c. send confirmation email
-                const sendMail = await fetch('sendMail.php', {
+                // C. Send Email
+                const mailData = { name: name, email: email, concert: concert };
+                await fetch('sendMail.php', {
                     method: 'POST',
-                    body: JSON.stringify({ name: name, email: email, concert: concert})
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(mailData)
                 });
 
+                // D. Success
+                messageDisplay.innerHTML = `<span style="color:#00eaff; font-size:1.2rem;">🎉 Booking Confirmed & Saved!<br>Email sent to ${email}</span>`;
                 bookingForm.reset();
                 setTimeout(updatePrice, 100);
 
             } catch (error) {
-                messageDisplay.innerHTML = `
-                    <span style="color:#ff4d4d; font-size:1.1rem;">
-                        A network error occurred. Please ensure the PHP server is running.
-                    </span>`;
-                console.error('Fetch Error:', error);
+                messageDisplay.innerHTML = `<span style="color:#ff4d4d;">Network Error.</span>`;
             }
         });
     }
 
-  
-    const filterLinks = document.querySelectorAll('.filter-link');
-    filterLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const value = this.getAttribute('data-filter');
+    const bookedListContainer = document.getElementById('bookedListContainer');
+    const dashboardUserName = document.getElementById('dashboardUserName');
 
-            if(searchInput) {
-                // 1. Put the text in the search bar
-                searchInput.value = value;
-                // 2. Trigger the search logic
-                searchInput.dispatchEvent(new Event('input'));
+    if (bookedListContainer) {
+        fetchDashboardData();
+    }
+
+    async function fetchDashboardData() {
+        try {
+            const response = await fetch('get_dashboard_data.php');
+            const text = await response.text(); 
+            
+            try {
+                const data = JSON.parse(text);
+                
+                if (!data.authenticated) {
+                    bookedListContainer.innerHTML = '<p style="color:#ff4d4d;">You are not logged in. <a href="index.html" style="color:#00ff88;">Go back to Login</a></p>';
+                    return;
+                }
+
+                if (dashboardUserName) dashboardUserName.textContent = data.user_name;
+
+                if (data.bookings.length === 0) {
+                    bookedListContainer.innerHTML = '<p style="color:#00ff88; font-weight: bold; font-size: 1.1rem;">🎉 No bookings yet! Check out the available concerts below.</p>'; 
+                } else {
+                    bookedListContainer.innerHTML = ''; 
+                    
+                    data.bookings.forEach(booking => {
+                        // 🛑 ADDED CANCEL BUTTON HERE
+                        const cardHTML = `
+                            <div class="concert-card booked-card" id="booking-${booking.booking_id}" style="width: 280px;">
+                                <img src="${booking.image_path || 'images/default.jpg'}" alt="${booking.name}">
+                                <div class="card-info">
+                                    <h3>${booking.name}</h3>
+                                    <p class="date">${booking.date} • ${booking.venue || 'Venue TBD'}</p>
+                                    
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                                        <div class="booking-status">
+                                            <i class="fas fa-check-circle"></i> Confirmed
+                                        </div>
+                                        <button class="cancel-booking-btn" data-id="${booking.booking_id}" style="background:#ff4d4d; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; font-size:0.8rem;">
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        `;
+                        bookedListContainer.insertAdjacentHTML('beforeend', cardHTML);
+                    });
+
+                    // 🛑 ATTACH CLICK LISTENERS FOR CANCEL
+                    attachCancelListeners();
+                }
+            } catch (e) {
+                console.error("Dashboard JSON Error:", text);
+                bookedListContainer.innerHTML = '<p style="color:#ff4d4d;">No booking yet.</p>';
             }
+
+        } catch (error) {
+            console.error(error);
+            bookedListContainer.innerHTML = '<p style="color:#ff4d4d;">Server connection failed.</p>';
+        }
+    }
+
+    function attachCancelListeners() {
+        const cancelBtns = document.querySelectorAll('.cancel-booking-btn');
+        cancelBtns.forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const bookingId = this.getAttribute('data-id');
+                
+                // 1. Confirm Dialog
+                const confirmCancel = confirm("Are you sure you want to cancel this event?");
+                
+                if (confirmCancel) {
+                    try {
+                        // 2. Send Request to PHP
+                        const response = await fetch('cancel_booking.php', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({ booking_id: bookingId })
+                        });
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // 3. Success Alert & Remove Card
+                            alert("Your booking is cancelled. You will get your refund.");
+                            
+                            // Remove element from screen
+                            const cardToRemove = document.getElementById(`booking-${bookingId}`);
+                            if (cardToRemove) cardToRemove.remove();
+                            
+                            // If no cards left, show message
+                            if (document.querySelectorAll('.booked-card').length === 0) {
+                                bookedListContainer.innerHTML = '<p style="color:#00ff88; font-weight: bold; font-size: 1.1rem;">🎉 No bookings yet! Check out the available concerts below.</p>';
+                            }
+
+                        } else {
+                            alert("Error: " + result.message);
+                        }
+                    } catch (err) {
+                        alert("Network error occurred.");
+                    }
+                }
+            });
         });
-    });
+    }
 
 });
