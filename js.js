@@ -4,9 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const noResultsMsg = document.getElementById('noResults');
     const searchInput = document.getElementById('searchInput');
 
-    // ======================================================
-    // 1. FILTER & SEARCH LOGIC
-    // ======================================================
     function filterConcerts(filterType, filterValue) {
         let visibleCount = 0;
 
@@ -60,10 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
-    // ======================================================
-    // 2. CAROUSEL LOGIC
-    // ======================================================
+    
     const carousel = document.querySelector('.concert-carousel');
     const leftBtn = document.getElementById('scrollLeftBtn');
     const rightBtn = document.getElementById('scrollRightBtn');
@@ -76,10 +70,6 @@ document.addEventListener('DOMContentLoaded', function() {
             carousel.scrollBy({ left: 320, behavior: 'smooth' });
         });
     }
-
-    // ======================================================
-    // 3. CALENDAR WIDGET LOGIC
-    // ======================================================
     const calendarGrid = document.getElementById('calendarGrid');
     if (calendarGrid) {
         const toggleBtn = document.getElementById('toggleCalendarBtn');
@@ -159,9 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ======================================================
-    // 4. AUTHENTICATION MODAL LOGIC
-    // ======================================================
     const authModal = document.getElementById('authModal');
     const signInBtns = document.querySelectorAll('.sign-in-btn'); 
     const closeAuthBtn = document.querySelector('.close-modal-btn');
@@ -253,9 +240,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ======================================================
-    // 5. BOOKING FORM LOGIC
-    // ======================================================
     const bookingForm = document.getElementById('bookingForm');
 
     if (bookingForm) {
@@ -344,9 +328,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ======================================================
-    // 6. DASHBOARD & CANCELLATION LOGIC
-    // ======================================================
     const bookedListContainer = document.getElementById('bookedListContainer');
     const dashboardUserName = document.getElementById('dashboardUserName');
 
