@@ -15,15 +15,15 @@ Online Booking System
   - [ ] ER diagram
   - [ ] 
 - Prabhjot
-  - [ ] HTML and Page Structure
+  - [] HTML and Page Structure
   - [ ] CSS
   - [ ] Stylistic JS
   - [ ] Misc. Frontend
 - Simranjot
-  - [x ] Internal PHP Logic
-  - [ x] Practical javascript
-  - [x ] Calendar
-  - [x ] Documentation Misc.
+  - [x] Internal PHP Logic
+  - [x] Practical javascript
+  - [x] Calendar
+  - [x] Documentation Misc.
 
 ## Deployment instructions
 1. Requires a running MariaDB or MYSQL server.
