@@ -20,10 +20,10 @@ Online Booking System
   - [ ] Stylistic JS
   - [ ] Misc. Frontend
 - Simranjot
-  - [ ] Internal PHP Logic
-  - [ ] Practical javascript
-  - [ ] Calendar
-  - [ ] Documentation Misc.
+  - [x ] Internal PHP Logic
+  - [ x] Practical javascript
+  - [x ] Calendar
+  - [x ] Documentation Misc.
 
 ## Deployment instructions
 1. Requires a running MariaDB or MYSQL server.
