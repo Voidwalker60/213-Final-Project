@@ -15,10 +15,10 @@ Online Booking System
   - [ ] ER diagram
   - [ ] 
 - Prabhjot
-  - [] HTML and Page Structure
-  - [ ] CSS
-  - [ ] Stylistic JS
-  - [ ] Misc. Frontend
+  - [x] HTML and Page Structure
+  - [x] CSS
+  - [x] Stylistic JS
+  - [x] Misc. Frontend
 - Simranjot
   - [x] Internal PHP Logic
   - [x] Practical javascript
