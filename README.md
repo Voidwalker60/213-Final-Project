@@ -12,8 +12,7 @@ Online Booking System
   - [x] SQL Database creation and management
   - [ ] PHP logic w/ SQL
   - [ ] Email hosting(Use gmail or custom costed SMTP)
-  - [ ] ER diagram
-  - [ ] 
+  - [ ] ER diagram 
 - Prabhjot
   - [x] HTML and Page Structure
   - [x] CSS
