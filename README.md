@@ -20,7 +20,7 @@ mysql -u root -p < sql.txt
 3. Set admin password via *page*/admin
 4. Comes Preseeded with events
 5. Premade credentials are:
-   ```
+```
 admin@stubhub.com, password123
 jane.smith@gmail.com, userpass456
-   ```
+```
