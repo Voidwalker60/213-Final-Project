@@ -1,28 +1,8 @@
 # 213 Final Project
 Online Booking System
-
-## Architecture 
-
- - Lorem Ipsum
-
-
-## Group member responsibilities
-
-- Maddie
-  - [x] SQL Database creation and management
-  - [ ] PHP logic w/ SQL
-  - [ ] Email hosting(Use gmail or custom costed SMTP)
-  - [ ] ER diagram 
-- Prabhjot
-  - [x] HTML and Page Structure
-  - [x] CSS
-  - [x] Stylistic JS
-  - [x] Misc. Frontend
-- Simranjot
-  - [x] Internal PHP Logic
-  - [x] Practical javascript
-  - [x] Calendar
-  - [x] Documentation Misc.
+Created by Maddie, Prabhjot, and Simranjot
+## Description
+This project is a Booking system written in HTML, CSS, Javascript, and PHP, primarily made for concerts and other large events. This is built to be fully selfhostable, and is free for enterprise and private usage.
 
 ## Deployment instructions
 1. Requires a running MariaDB or MYSQL server.
@@ -36,12 +16,11 @@ mysql -u root -p < sql.txt
        - calendar
        - json
    2. The mail function should be configured with your SMTP server of choice in php.ini.
-2. Runs via apache(Bundle with application like container, or configure manually?)
+2. Runs via apache
 3. Set admin password via *page*/admin
-4. Add new event
-
-## Challenges
- 
- - Lorem Ipsum
-
-
+4. Comes Preseeded with events
+5. Premade credentials are:
+   ```
+admin@stubhub.com, password123
+jane.smith@gmail.com, userpass456
+   ```
